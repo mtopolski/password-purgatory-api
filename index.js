@@ -159,6 +159,8 @@ class Beelzebub {
       message: () => 'Password must contain only unique characters',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
+    // The empty message should be moved to a separate category if there are too many
+    // Low responses to cycle through. For now it looks to be fine.
     {
       passwordIsInvalid: password => password.length === 0,
       message: () => 'Password cannot be empty',
