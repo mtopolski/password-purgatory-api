@@ -15,7 +15,7 @@ async function handleRequest(request) {
   if (Beelzebub.getValidChecks(password).length) {
     const infuriateResult = Beelzebub.infuriate(password)
     if (infuriateResult) {
-      badPasswordMessage = infuriateResult.message
+      badPasswordMessage = infuriateResult.message(password)
     }
   }
 
@@ -47,31 +47,32 @@ class Beelzebub {
     {
       passwordIsInvalid: password =>
         password.match(/Homer|Marge|Bart|Lisa|Maggie/) === null,
-      message:
+      message: () =>
         'Password must contain at least 1 primary Simpsons family character',
       infuriationLevel: InfuriationLevel.High,
     },
     {
       passwordIsInvalid: password => password.match(/[ÅåÄäÖöÆæØø]/) === null,
-      message: 'Password must contain at least 1 Nordic character',
+      message: () => 'Password must contain at least 1 Nordic character',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password =>
         password.match(/[\u0370-\u03ff\u1f00-\u1fff]/) === null,
-      message: 'Password must contain at least 1 Greek character',
+      message: () => 'Password must contain at least 1 Greek character',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password =>
         password.match(/Peter|Lois|Chris|Meg|Brian|Stewie/) === null,
-      message:
+      message: () =>
         'Password must contain at least 1 primary Griffin family character',
       infuriationLevel: InfuriationLevel.High,
     },
     {
       passwordIsInvalid: password => password.match(/42/) === null,
-      message: 'Password must contain the answer to life, the universe, and everything',
+      message: () =>
+        'Password must contain the answer to life, the universe, and everything',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
@@ -79,7 +80,7 @@ class Beelzebub {
         password.match(
           /:‑\)|:\)|:\-\]|:\]|:>|:\-\}|:\}|:o\)\)|:\^\)|=\]|=\)|:\]|:\->|:>|8\-\)|:\-\}|:\}|:o\)|:\^\)|=\]|=\)|:‑D|:D|B\^D|:‑\(|:\(|:‑<|:<|:‑\[|:\[|:\-\|\||>:\[|:\{|:\(|;\(|:\'‑\(|:\'\(|:=\(|:\'‑\)|:\'\)|:"D|:‑O|:O|:‑o|:o|:\-0|>:O|>:3|;‑\)|;\)|;‑\]|;\^\)|:‑P|:\-\/|:\/|:‑\.|>:|>:\/|:|:‑\||:\||>:‑\)|>:\)|\}:‑\)|>;‑\)|>;\)|>:3|\|;‑\)|:‑J|<:‑\||~:>/,
         ) === null,
-      message: 'Password must contain at least one emoticon',
+      message: () => 'Password must contain at least one emoticon',
       infuriationLevel: InfuriationLevel.High,
     },
     {
@@ -90,23 +91,23 @@ class Beelzebub {
           .reduce((a, b) => a + b) %
           3 !==
         0,
-      message:
+      message: () =>
         'Password when stripped of non-numeric characters must be a number divisible by 3',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password => password.match(/[ÄÜÖ\u1e9e]/) === null,
-      message: 'Password must contain at least one upper case German Umlaut',
+      message: () => 'Password must contain at least one upper case German Umlaut',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password => password.match(/dog$/) === null,
-      message: 'Password must end with dog',
+      message: () => 'Password must end with dog',
       infuriationLevel: InfuriationLevel.Moderate,
     },
     {
       passwordIsInvalid: password => password.match(/^cat/) === null,
-      message: 'Password must start with cat',
+      message: () => 'Password must start with cat',
       infuriationLevel: InfuriationLevel.Moderate,
     },
     {
@@ -114,8 +115,7 @@ class Beelzebub {
         password.match(
           /spring|summer|autumn|fall|winter/,
         ) === null,
-      message:
-        'Password must contain at least one season of the year',
+      message: () => 'Password must contain at least one season of the year',
       infuriationLevel: InfuriationLevel.Moderate,
     },
     {
@@ -123,7 +123,7 @@ class Beelzebub {
         password.match(
           /Luna|Deimos|Phobos|Amalthea|Callisto|Europa|Ganymede|Io|Dione|Enceladus|Hyperion|Iapetus|Mimas|Phoebe|Rhea|Tethys|Titan|Ariel|Miranda|Oberon|Titania|Umbriel|Nereid|Triton|Charon|Himalia|Carme|Ananke|Adrastea|Elara|Adrastea|Elara|Epimetheus|Callirrhoe|Kalyke|Thebe|Methone|Kiviuq|Ijiraq|Paaliaq|Albiorix|Erriapus|Pallene|Polydeuces|Bestla|Daphnis|Despina|Puck|Carpo|Pasiphae|Themisto|Cyllene|Isonoe|Harpalyke|Hermippe|Iocaste|Chaldene|Euporie/,
         ) === null,
-      message:
+      message: () =>
         'Password must contain at least one named solarian planetary satellite',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
@@ -132,21 +132,20 @@ class Beelzebub {
         password.match(
           /Michael|Toby|Dwight|Pam|Jim|Meredith|Gabe|Kelly|Ryan|Jan|Robert|Oscar|Angela|Kevin|Darryl|Creed|Stanley|Phyllis|Bob|Andy|Erin|David|Nellie|Roy|Karen|Hank|Pete|Clark|Nate|Holly|Todd|Calvin|Val|Mose|Cathy|Helene|Deangelo/,
         ) === null,
-      message:
-        'Password must contain at least one cast member from The Office',
+      message: () => 'Password must contain at least one cast member from The Office',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password =>
         password.match(/(?:[^1234569]*[1234569]){3}[^1234569]*/) === null,
-      message:
+      message: () =>
         'Password must contain at least 3 digits from the first 10 decimal places of pi',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password =>
         password.match(/bobcat|Lynx rufus|L. rufus/) === null,
-      message: 'Password must contain a bobcat',
+      message: () => 'Password must contain a bobcat',
       infuriationLevel: InfuriationLevel.High,
     },
     {
@@ -157,55 +156,53 @@ class Beelzebub {
             {},
           ),
         ).some(x => x > 1),
-      message: 'Password must contain only unique characters',
+      message: () => 'Password must contain only unique characters',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
-    // The empty message should be moved to a separate category if there are too many
-    // Low responses to cycle through. For now it looks to be fine.
     {
       passwordIsInvalid: password => password.length === 0,
-      message: 'Password cannot be empty',
+      message: () => 'Password cannot be empty',
       infuriationLevel: InfuriationLevel.Low,
     },
     {
       passwordIsInvalid: password => password.length < 8,
-      message: 'Password must be at least 8 characters long',
+      message: () => 'Password must be at least 8 characters long',
       infuriationLevel: InfuriationLevel.Low,
     },
     {
       passwordIsInvalid: password => ( password.length < 12 || password.length > 16),
-      message: 'Password must be 12-16 characters long',
+      message: () => 'Password must be 12-16 characters long',
       infuriationLevel: InfuriationLevel.Low,
     },
     {
       passwordIsInvalid: password => password.match(/\d+/) === null,
-      message: 'Password must contain at least 1 number',
+      message: () => 'Password must contain at least 1 number',
       infuriationLevel: InfuriationLevel.Low,
     },
     {
       passwordIsInvalid: password => password.match(/1$/) !== null,
-      message: 'Password must not end in "1"',
+      message: () => 'Password must not end in "1"',
       infuriationLevel: InfuriationLevel.Low,
     },
     {
       passwordIsInvalid: password => password.match(/!$/) !== null,
-      message: 'Password must not end in "!"',
+      message: () => 'Password must not end in "!"',
       infuriationLevel: InfuriationLevel.Low,
     },
     {
       passwordIsInvalid: password => password.match(/[A-Z]/) === null,
-      message: 'Password must contain at least 1 uppercase character',
+      message: () => 'Password must contain at least 1 uppercase character',
       infuriationLevel: InfuriationLevel.Low,
     },
     {
       passwordIsInvalid: password => password.match(/[a-z]/) === null,
-      message: 'Password must contain at least 1 lowercase character',
+      message: () => 'Password must contain at least 1 lowercase character',
       infuriationLevel: InfuriationLevel.Low,
     },
     {
       passwordIsInvalid: password =>
         password.match(/Password\smust\scontain/) === null,
-      message: 'Password must contain "Password must contain"',
+      message: () => 'Password must contain "Password must contain"',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
@@ -213,24 +210,24 @@ class Beelzebub {
         password.match(
           /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/,
         ) === null,
-      message: 'Password must contain at least one emoji',
+      message: () => 'Password must contain at least one emoji',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password => password != password.split("").reverse().join(""),
-      message: 'Password must be a palindrome',
+      message: () => 'Password must be a palindrome',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password =>
         password.match(/\u202E/) === null,
-      message: 'Password must contain RLO character',
+      message: () => 'Password must contain RLO character',
       infuriationLevel: InfuriationLevel.High,
     },
     {
       passwordIsInvalid: password =>
         password.match(/(.)\1/) !== null,
-      message: 'Password must not contain consecutive characters',
+      message: () => 'Password must not contain consecutive characters',
       infuriationLevel: InfuriationLevel.Moderate,
     },
     {
@@ -238,35 +235,35 @@ class Beelzebub {
         password.match(
           /Pawn|Bishop|Knight|Rook|Queen|King/
         ) === null,
-      message:
-        'Password must contain at least one chess piece',
+      message: () => 'Password must contain at least one chess piece',
       infuriationLevel: InfuriationLevel.High,
     },
     {
       passwordIsInvalid: password => password.length % 2 != 0,
-      message: 'Password length must be even',
+      message: () => 'Password length must be even',
       infuriationLevel: InfuriationLevel.Moderate,
     },
     {
       passwordIsInvalid: password => (password.length % 2 != 0) || ((password.substring(0, (password.length / 2)) != password.substring(password.length / 2, password.length).split("").reverse().join(""))),
-      message: 'Password length must be even, and the final half of the password needs to contain the reverse of the first',
+      message: () =>
+        'Password length must be even, and the final half of the password needs to contain the reverse of the first',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
     {
       passwordIsInvalid: password => password.length % 2 == 0,
-      message: 'Password length must be odd',
+      message: () => 'Password length must be odd',
       infuriationLevel: InfuriationLevel.Moderate,
     },
     {
       passwordIsInvalid: password => password.match(/[ÁÉÍÓÚáéíóú]/) === null,
-      message: 'Password must contain at least 1 character with an acute accent',
+      message: () => 'Password must contain at least 1 character with an acute accent',
       infuriationLevel: InfuriationLevel.Ridiculous,
     },
-    // {
-    //   passwordIsInvalid: password => password.length > 20,
-    //   message: 'Password must not be ' + password.length + ' characters long', TODO: Can't access password here. Might need to make message a function?
-    //   infuriationLevel: InfuriationLevel.High,
-    // },
+    {
+      passwordIsInvalid: password => password.length > 20,
+      message: password => 'Password must not be ' + password.length + ' characters long',
+      infuriationLevel: InfuriationLevel.High,
+    },
   ]
 
   // Checks that can be used to infuriate the spammer, based on their current password.
